@@ -218,10 +218,17 @@ class SendMessagePipeline(object):
     def process_item(self, item, spider):
 
         def send_msg(message):
-            from wechatpy.enterprise import WeChatClient
+            import requests
             try:
-                client = WeChatClient(settings.get("WECHAT_CORPID"), settings.get("WECHAT_SECRET"))
-                client.message.send_text(settings.get("WECHAT_AGENT_ID"), settings.get("WECHAT_MSG_USER"), message)
+                web_hook_url = settings.get("WEB_HOOK_URL")
+                data = {
+                    "msgtype": "text",
+                    "text": {
+                        "content": message,
+                        "mentioned_list": ["@all"]
+                    }
+                }
+                requests.post(web_hook_url, data=data)
             except Exception as e:
                 return False
 

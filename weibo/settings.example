@@ -55,7 +55,5 @@ MONGO_URI = 'mongodb://root:c030834121@127.0.0.1:27017/spider?authSource=admin&r
 # MYSQL_USER = 'root'
 # MYSQL_PASSWORD = '123456'
 # MYSQL_DATABASE = 'weibo'
-WECHAT_CORPID = "ww34b4d2064fa1b30a"
-WECHAT_SECRET = "iGoKwpfLnkrzuAKdA8NIRnBydN5gxUi0tvMksrMhNjc"
-WECHAT_MSG_USER = "HuangHui"
-WECHAT_AGENT_ID = "1000002"
+WEB_HOOK_URL="https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key="
+
