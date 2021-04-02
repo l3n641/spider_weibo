@@ -106,6 +106,7 @@ class MongoPipeline(object):
             new_item = copy.deepcopy(item)
             if not self.collection.find_one({'id': new_item['weibo']['id']}):
                 self.collection.insert_one(dict(new_item['weibo']))
+                return item
             else:
                 self.collection.update_one({'id': new_item['weibo']['id']},
                                            {'$set': dict(new_item['weibo'])})
@@ -211,3 +212,27 @@ class DuplicatesPipeline(object):
         else:
             self.ids_seen.add(item['weibo']['id'])
             return item
+
+
+class SendMessagePipeline(object):
+    def process_item(self, item, spider):
+
+        def send_msg(message):
+            from wechatpy.enterprise import WeChatClient
+            try:
+                client = WeChatClient(settings.get("WECHAT_CORPID"), settings.get("WECHAT_SECRET"))
+                client.message.send_text(settings.get("WECHAT_AGENT_ID"), settings.get("WECHAT_MSG_USER"), message)
+            except Exception as e:
+                return False
+
+        if not item:
+            return None
+        keyword_list = settings.get("MATCH_KEYWORD_LIST")
+        if not keyword_list:
+            return item
+        for keyword in keyword_list:
+            if keyword in item["weibo"]["text"]:
+                send_msg(item["weibo"]["text"])
+                break
+
+        return item
