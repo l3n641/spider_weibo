@@ -30,21 +30,17 @@
 ## 使用说明
 本程序的所有配置都在setting.py文件中完成，该文件位于“weibo-search\weibo\settings.py”。
 ### 1.下载脚本
-```bash
-$ git clone https://github.com/dataabc/weibo-search.git
 ```
-### 2.安装Scrapy
-本程序依赖Scrapy，要想运行程序，需要安装Scrapy。如果系统中没有安装Scrapy，请根据自己的系统安装Scrapy，以Ubuntu为例，可以使用如下命令：
-```bash
-$ pip install scrapy
-```
-### 3.安装依赖
+### 2.安装依赖
 ```
 $ pip install -r requirements.txt
 ```
+### 3.复制配置文件
+cp settings.example settings.py
 
 ### 4.设置cookie
 DEFAULT_REQUEST_HEADERS中的cookie是我们需要填的值，如何获取cookie详见[如何获取cookie](#如何获取cookie)，获取后将"your cookie"替换成真实的cookie即可。
+
 ### 5.设置搜索关键词
 修改setting.py文件夹中的KEYWORD_LIST参数。
 如果你想搜索一个关键词，如“迪丽热巴”：
