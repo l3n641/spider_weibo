@@ -239,7 +239,13 @@ class SendMessagePipeline(object):
             return item
         for keyword in keyword_list:
             if keyword in item["weibo"]["text"]:
-                send_msg(item["weibo"]["text"])
+                pics_data = ""
+                for pic in item["weibo"]["pics"]:
+                    pics_data = pics_data + pic
+                text = item["weibo"]["text"]
+                video_url = item["weibo"]['video_url']
+                msg = f"正文{text},图片:{pics_data},视频:{video_url}"
+                send_msg(msg)
                 break
 
         return item
