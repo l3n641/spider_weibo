@@ -228,7 +228,7 @@ class SendMessagePipeline(object):
                         "mentioned_list": ["@all"]
                     }
                 }
-                requests.post(web_hook_url, data=data)
+                requests.post(web_hook_url, json=data)
             except Exception as e:
                 return False
 
