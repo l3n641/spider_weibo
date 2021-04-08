@@ -215,37 +215,48 @@ class DuplicatesPipeline(object):
 
 
 class SendMessagePipeline(object):
-    def process_item(self, item, spider):
+    @staticmethod
+    def match_keyword():
+        pass
 
-        def send_msg(message):
-            import requests
-            try:
-                web_hook_url = settings.get("WEB_HOOK_URL")
-                data = {
-                    "msgtype": "text",
-                    "text": {
-                        "content": message,
-                        "mentioned_list": ["@all"]
-                    }
+    @staticmethod
+    def send_msg(key, message):
+        import requests
+        web_hook_url = f"https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key={key}"
+        try:
+            data = {
+                "msgtype": "text",
+                "text": {
+                    "content": message,
+                    "mentioned_list": ["@all"]
                 }
-                requests.post(web_hook_url, json=data)
-            except Exception as e:
-                return False
+            }
+            requests.post(web_hook_url, json=data)
+        except Exception as e:
+            return False
+
+    @staticmethod
+    def generate_message(data):
+        pics_data = ""
+        for pic in data["pics"]:
+            pics_data = pics_data + pic + "；"
+        text = data["text"]
+        video_url = data['video_url']
+        msg = f"正文:{text},图片:{pics_data.strip(';')},视频:{video_url}"
+        return msg
+
+    def process_item(self, item, spider):
 
         if not item:
             return None
         keyword_list = settings.get("MATCH_KEYWORD_LIST")
         if not keyword_list:
             return item
-        for keyword in keyword_list:
-            if keyword in item["weibo"]["text"]:
-                pics_data = ""
-                for pic in item["weibo"]["pics"]:
-                    pics_data = pics_data + pic + "；"
-                text = item["weibo"]["text"]
-                video_url = item["weibo"]['video_url']
-                msg = f"正文:{text},图片:{pics_data.strip(';')},视频:{video_url}"
-                send_msg(msg)
-                break
+        for key in keyword_list:
+            for keyword in keyword_list[key]:
+                if keyword in item["weibo"]["text"]:
+                    msg = self.generate_message(item["weibo"])
+                    self.send_msg(key, msg)
+                    break
 
         return item
