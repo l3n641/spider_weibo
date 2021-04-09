@@ -228,7 +228,6 @@ class SendMessagePipeline(object):
                 "msgtype": "text",
                 "text": {
                     "content": message,
-                    "mentioned_list": ["@all"]
                 }
             }
             requests.post(web_hook_url, json=data)
